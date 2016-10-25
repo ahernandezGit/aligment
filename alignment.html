@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	<style>
+		canvas { width: 100% !important; height: 100% !important}
+        body{padding: 0px; margin: 0px; }
+        .overcanvas {
+				position: absolute;
+				top: 0px;
+				width: 150px;
+				padding: 5px;
+				font-family: Monospace;
+				font-size: 13px;
+				text-align: left;
+				font-weight: bold;
+        }
+        
+	</style>
+	<script src="libs/three80.js"></script>
+	<script src="libs/TrackballControls.js"></script>
+	<script src="libs/ThreeSetup.js"></script>
+    <script src="libs/mouseEvents.js"></script>
+    <script src="libs/mouseUtils.js"></script>    
+    <script src="libs/d3.min.js"></script>
+    <script src="libs/utils.js"></script>
+    <script src="libs/aligns.js"></script>    
+    <script  type="application/x-javascript" src="libs/lalolib/lalolib.js"></script>
+	</head>
+	<body>
+        <div class="overcanvas"><br> 
+            <button id="c1Button">Curve1</button><br>
+            <button id="c2Button">Curve2</button><br>
+            <button id="lButton">Landmarks</button><br>
+            <button id="alButton">Aligns</button><br>
+            <input type="file" id="fileToLoad" >
+            <button id="clearButton">Clear</button><br>
+        </div>    
+        <script>
+            var setup = new ThreeSetup();
+            
+            //flag for know if curve 1 and 2 have been drawed
+            var isCurve1=false;
+            var isCurve2=false;
+            
+            // flag for choose landmarks 
+            var landmark=false;
+            
+            // visual match between curves 1 and 2
+            var raycasterCurve = new THREE.Raycaster();
+            raycasterCurve.linePrecision=1;
+            var pointGeometry = new THREE.Geometry();
+            pointGeometry.vertices.push(new THREE.Vector3());
+            var landmarkData1=[];
+            var landmarkData2=[];
+            
+            //flag for draw curve 1 and 2
+            var isDrawing=false;
+            
+            // points for drawing any curve
+            var LastPoint,CurrentPoint;
+            var LineStroke = new THREE.Object3D();
+            
+            
+            var material1 = new THREE.LineBasicMaterial( { color: 0xF12C2C, linewidth: 2 } );
+            var material2 = new THREE.LineBasicMaterial( { color: 0x0A0A79, linewidth: 2 } );
+            var pointmaterial = new THREE.PointsMaterial( {color: 0x27B327, size: 10.0, sizeAttenuation: false, alphaTest: 0.5 } );
+            var correspondencesmaterial=new THREE.LineDashedMaterial( { color: 0x000000, linewidth: 1, dashSize:0.5, gapSize:0.5} )
+            var finalcorrespondencesmaterial=new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
+            var Line1=new THREE.Line(new THREE.Geometry(),material1);
+            var Line2=new THREE.Line(new THREE.Geometry(),material2);
+            Line1.name="Line1";
+            Line2.name="Line2";
+            
+            var points1 = [ ], points2 = [ ];
+            
+            
+            window.addEventListener('resize', onWindowResize, false);
+            function onWindowResize() {
+                setup.resize();
+            }
+            function render() {
+                requestAnimationFrame(render);
+                setup.render();
+            }
+            render();
+            var canvaswindows=d3.select("canvas");
+            var bodywindows=d3.select("body");
+            bodywindows.on("keydown",onKeyDown);
+            canvaswindows.on("mousedown",onMouseDown);
+            canvaswindows.on("mouseup",onMouseUp);
+            canvaswindows.on("mousemove",onMouseMove);
+            //canvaswindows.on("click",onMouseClick);    
+        </script>
+        <script src="libs/ButtonsEvents.js"></script>  
+	</body>
+</html>
